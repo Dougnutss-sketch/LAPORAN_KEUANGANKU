@@ -27,8 +27,23 @@ foreach ($queries as $query) {
     }
 }
 
+// Koneksi ke database yang sudah dibuat
+$mysqli->select_db('keuangan_db');
+
+// Insert user default jika belum ada
+$check_user = $mysqli->query("SELECT id FROM users WHERE username = 'admin' LIMIT 1");
+if ($check_user && $check_user->num_rows === 0) {
+    $password_hash = password_hash('admin123', PASSWORD_BCRYPT);
+    $mysqli->query("INSERT INTO users (username, password, email, nama_lengkap) VALUES ('admin', '$password_hash', 'admin@example.com', 'Administrator')");
+}
+
 $mysqli->close();
 
 echo "<h2 style='color: green; font-family: Arial;'>✓ Database dan tabel berhasil dibuat!</h2>";
-echo "<p style='font-family: Arial;'><a href='index.php'>Klik di sini untuk lanjut ke aplikasi</a></p>";
+echo "<p style='font-family: Arial;'><strong>User default:</strong></p>";
+echo "<ul style='font-family: Arial;'>";
+echo "<li>Username: <code>admin</code></li>";
+echo "<li>Password: <code>admin123</code></li>";
+echo "</ul>";
+echo "<p style='font-family: Arial;'><a href='login.php'>Klik di sini untuk login</a></p>";
 ?>
